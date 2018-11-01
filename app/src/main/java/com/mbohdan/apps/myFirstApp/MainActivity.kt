@@ -3,6 +3,7 @@ package com.mbohdan.apps.myFirstApp
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var fr: SupportMapFragment
+    private lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,24 +23,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
-        fr = supportFragmentManager
+        mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
-        fr.getMapAsync(this)
+        mapFragment.getMapAsync(this)
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
                 this.setTitle(R.string.title_home)
+                    mapFragment.onResume()
+                    mapView.visibility = View.VISIBLE
+
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
-                this.setTitle(R.string.title_dashboard)
-//                container.visibility = View.INVISIBLE
+                this.setTitle(R.string.title_scanner)
+                    mapFragment.onPause()
+                    mapView.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
                 this.setTitle(R.string.title_notifications)
+                    mapFragment.onPause()
+                    mapView.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
         }
