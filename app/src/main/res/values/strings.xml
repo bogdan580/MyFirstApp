@@ -2,6 +2,6 @@
     <string name="app_name">My First App</string>
     <string name="title_home">Map</string>
     <string name="title_scanner">Scanner</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_notifications">Basic Auth</string>
     <string name="scan_activity_name">Scan Code</string>
 </resources>

@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mapFragment.onResume()
                     mapView.visibility = View.VISIBLE
                     scanner.visibility = View.INVISIBLE
+                    login.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
@@ -55,11 +56,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mapFragment.onPause()
                     mapView.visibility = View.INVISIBLE
                     scanner.visibility = View.VISIBLE
+                    login.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
                 this.setTitle(R.string.title_notifications)
                     mapFragment.onPause()
+                    login.visibility = View.VISIBLE
                     mapView.visibility = View.INVISIBLE
                     scanner.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
