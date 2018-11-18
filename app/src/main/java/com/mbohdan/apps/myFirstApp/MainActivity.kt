@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var mapFragment: SupportMapFragment
     private var btn: Button? = null
+    private var gitUsers: Button? = null
 
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this@MainActivity, ScanActivity::class.java)
             startActivity(intent)
         }
+
+         gitUsers = findViewById(R.id.gitUsers) as Button
+
+         gitUsers!!.setOnClickListener {
+             val intentScroll = Intent(this@MainActivity, ScrollingActivity::class.java)
+             startActivity(intentScroll)
+         }
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
