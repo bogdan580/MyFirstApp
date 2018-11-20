@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var btn: Button? = null
     private var gitUsers: Button? = null
+    private var loginBtn: Button? = null
 
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
              val intentScroll = Intent(this@MainActivity, ScrollingActivity::class.java)
              startActivity(intentScroll)
          }
+
+         loginBtn = findViewById(R.id.loginBtn) as Button
+
+         loginBtn!!.setOnClickListener {
+             val intentLogin = Intent(this@MainActivity, LoginActivity::class.java)
+             startActivity(intentLogin)
+         }
     }
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -56,7 +64,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mapFragment.onResume()
                     mapView.visibility = View.VISIBLE
                     scanner.visibility = View.INVISIBLE
-                    login.visibility = View.INVISIBLE
+                    loginLayout.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_dashboard -> {
@@ -64,13 +72,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     mapFragment.onPause()
                     mapView.visibility = View.INVISIBLE
                     scanner.visibility = View.VISIBLE
-                    login.visibility = View.INVISIBLE
+                    loginLayout.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
                 this.setTitle(R.string.title_notifications)
                     mapFragment.onPause()
-                    login.visibility = View.VISIBLE
+                    loginLayout.visibility = View.VISIBLE
                     mapView.visibility = View.INVISIBLE
                     scanner.visibility = View.INVISIBLE
                 return@OnNavigationItemSelectedListener true
