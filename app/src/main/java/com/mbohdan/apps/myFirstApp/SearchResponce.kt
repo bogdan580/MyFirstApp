@@ -13,6 +13,12 @@ data class User(
     val score: Int
 )
 
+data class UserBean(
+    val username: String,
+    val password: String,
+    val save: Boolean
+)
+
 data class Result (
     val total_count: Int,
     val incomplete_results: Boolean,

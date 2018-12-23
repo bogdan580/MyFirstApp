@@ -1,38 +1,34 @@
 package com.mbohdan.apps.myFirstApp
 
+import android.Manifest.permission.READ_CONTACTS
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
-import android.content.pm.PackageManager
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.CursorLoader
+import android.content.Intent
 import android.content.Loader
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
+import android.system.ErrnoException
 import android.text.TextUtils
+import android.util.Base64
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
-
-import java.util.ArrayList
-import android.Manifest.permission.READ_CONTACTS
-import android.app.DownloadManager
-import android.util.Base64
-import android.util.Log
-
+import com.mbohdan.apps.myFirstApp.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_scrolling.*
-import okhttp3.Request
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.io.IOException
+import java.util.*
 
 /**
  * A login screen that offers login via email/password.
@@ -48,6 +44,17 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        // Check if UserResponse is Already Logged In
+        if(SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        val loginData = SaveSharedPreference.getLoginData(getApplicationContext())
+        login.setText(loginData.substringBefore(":"))
+        password.setText(loginData.substringAfter(":"))
+        saveLoginData.isChecked = !loginData.substringBefore(":").equals("")
+
         // Set up the login form.
         populateAutoComplete()
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -264,7 +271,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
      */
     inner class UserLoginTask internal constructor(private val mEmail: String, private val mPassword: String) :
         AsyncTask<Void, Void, Boolean>() {
-
+        var errorMsg: String = ""
         override fun doInBackground(vararg params: Void): Boolean? {
             // TODO: attempt authentication against a network service.
 
@@ -272,6 +279,7 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             val repository = LoginRepositoryProvider.provideLoginRepository()
             val username = mEmail
             val password = mPassword
+            val save = saveLoginData.isChecked
 
             val base = username + ":" + password
 
@@ -280,50 +288,62 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
 
 
-//            call.enqueue(object : Callback<Profile> {
-//                override fun onResponse(call: Call<Profile>?, response: Response<Profile>?) {
-//
-//                    if (response != null && response.isSuccessful) {
-//                        pokemonListListener.onSuccess(response.body())
-//                    } else {
-//                        pokemonListListener.onFailure(appContext.getString(R.string.error_fetching_data))
-//                    }
-//
-//
-//                }
-//
-//                override fun onFailure(call: Call<Profile>?, t: Throwable?) {
-//                    pokemonListListener.onFailure(appContext.getString(R.string.error_fetching_data))
-//                }
-//            })
+/*            call.enqueue(object : Callback<Profile> {
+                override fun onResponse(call: Call<Profile>?, response: Response<Profile>?) {
+
+                    if (response != null && response.isSuccessful) {
+                        pokemonListListener.onSuccess(response.body())
+                    } else {
+                        pokemonListListener.onFailure(appContext.getString(R.string.error_fetching_data))
+                    }
 
 
+                }
+
+                override fun onFailure(call: Call<Profile>?, t: Throwable?) {
+                    pokemonListListener.onFailure(appContext.getString(R.string.error_fetching_data))
+                }
+            })*/
+
+            SaveSharedPreference.setLoginData(getApplicationContext(), username, password, save)
 
             try {
                 val response = call.execute()
                 if (response.isSuccessful) {
+
+                     SaveSharedPreference.setLoggedIn(getApplicationContext(), true)
+
                     Log.d("responce",response.headers().names().size.toString())
                     for( res in response.raw().headers().names().iterator()) {
-                        Log.d("res", res) // list of headers
+                        Log.d("res list", res) // list of headers
                     }
                     for( res in response.raw().headers().values("Set-Cookie").iterator()) {
-                        Log.d("res", res) // cookie
+                        Log.d("res list 2", res) // cookie
                     }
-                    Log.d("res", response.raw().headers().values("Set-Cookie")[0]) // cookie
-                    Log.d("res", response.raw().headers().values("Set-Cookie").first()) // cookie
-
+                    Log.d("res id=0", response.raw().headers().values("Set-Cookie")[0]) // cookie
+                    Log.d("res 1", response.raw().headers().values("Set-Cookie").first()) // cookie
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(intent)
 
                     return true
                 } else {
                     for( res in response.raw().headers().names().iterator()) {
-                        Log.d("res", res) // list of headers
+                        Log.d(">res not success", res) // list of headers
                     }
+                    errorMsg = getString(R.string.error_incorrect_password)
+                    return false
                 }
                 Thread.sleep(2000)
             } catch (e: InterruptedException) {
-                return false
+                Log.d("err", e.toString()) // list of headers
+                Snackbar.make(findViewById(R.id.login_form), getString(R.string.error_in_application), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show()
+            } catch (e: IOException) {
+                Snackbar.make(findViewById(R.id.login_form), getString(R.string.error_internet_connection), Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
             }
-
+            return false
             return DUMMY_CREDENTIALS
                 .map { it.split(":") }
                 .firstOrNull { it[0] == mEmail }
@@ -341,15 +361,19 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             if (success!!) {
                 finish()
             } else {
-                password.error = getString(R.string.error_incorrect_password)
-                password.requestFocus()
+                if(!errorMsg.isEmpty()) {
+                    password.error = errorMsg
+                    password.requestFocus()
+                }
             }
+            errorMsg = ""
         }
 
         override fun onCancelled() {
             mAuthTask = null
             showProgress(false)
         }
+
     }
 
     companion object {
@@ -370,7 +394,8 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         val apiService = ServerApiService.create()
 
         fun provideLoginRepository(): LoginRepository {
-            return LoginRepository(apiService)
+            return com.mbohdan.apps.myFirstApp.LoginRepository(apiService)
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package com.mbohdan.apps.myFirstApp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.mbohdan.apps.myFirstApp.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var btn: Button? = null
     private var gitUsers: Button? = null
-    private var loginBtn: Button? = null
+    private var logoutBtn: Button? = null
 
      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +51,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
              startActivity(intentScroll)
          }
 
-         loginBtn = findViewById(R.id.loginBtn) as Button
+         logoutBtn = findViewById(R.id.logoutBtn) as Button
 
-         loginBtn!!.setOnClickListener {
-             val intentLogin = Intent(this@MainActivity, LoginActivity::class.java)
-             startActivity(intentLogin)
+         logoutBtn!!.setOnClickListener {
+             SaveSharedPreference.logout(getApplicationContext())
+             val intent = Intent(this@MainActivity, LoginActivity::class.java)
+             startActivity(intent)
+             finish()
          }
     }
 

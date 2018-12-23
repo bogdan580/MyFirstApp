@@ -64,6 +64,10 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <CheckBox
+                    android:text="Save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/saveLoginData"/>
             <Button
                     android:id="@+id/email_sign_in_button"
                     style="?android:textAppearanceSmall"
