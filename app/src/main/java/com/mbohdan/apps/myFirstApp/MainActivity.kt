@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.mbohdan.apps.myFirstApp.paging_library.NewsListActivity
 import com.mbohdan.apps.myFirstApp.utils.SaveSharedPreference
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private var btn: Button? = null
     private var gitUsers: Button? = null
+    private var newsApi: Button? = null
     private var logoutBtn: Button? = null
 
      override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +50,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
          gitUsers!!.setOnClickListener {
              val intentScroll = Intent(this@MainActivity, ScrollingActivity::class.java)
+             startActivity(intentScroll)
+         }
+
+         newsApi = findViewById(R.id.newsApi) as Button
+
+         newsApi!!.setOnClickListener {
+             val intentScroll = Intent(this@MainActivity, NewsListActivity::class.java)
              startActivity(intentScroll)
          }
 
