@@ -11,9 +11,13 @@ import kotlinx.android.synthetic.main.item_news.view.*
 class NewsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun bind(news: Models.News?) {
-        if (news != null ) {
+        try {
+            if (news != null) {
                 itemView.txt_news_name.text = news.title
                 Picasso.get().load(news.image).into(itemView.img_news_banner)
+            }
+        } catch (e: Exception ) {
+
         }
     }
 

@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.mbohdan.apps.myFirstApp.paging_library.NewsListActivity
 import com.mbohdan.apps.myFirstApp.utils.SaveSharedPreference
+import com.mbohdan.apps.myFirstApp.webview.WebViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private var btn: Button? = null
     private var gitUsers: Button? = null
     private var newsApi: Button? = null
+    private var webViewBtn: Button? = null
     private var logoutBtn: Button? = null
 
      override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +59,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
          newsApi!!.setOnClickListener {
              val intentScroll = Intent(this@MainActivity, NewsListActivity::class.java)
+             startActivity(intentScroll)
+         }
+
+         webViewBtn = findViewById(R.id.webViewBtn) as Button
+
+         webViewBtn!!.setOnClickListener {
+             val intentScroll = Intent(this@MainActivity, WebViewActivity::class.java)
              startActivity(intentScroll)
          }
 

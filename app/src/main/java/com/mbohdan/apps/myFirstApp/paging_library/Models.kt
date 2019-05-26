@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class Models {
     data class Response(
+        @SerializedName("totalResults") val totalResults: Int,
         @SerializedName("articles") val news: List<News>
     )
 

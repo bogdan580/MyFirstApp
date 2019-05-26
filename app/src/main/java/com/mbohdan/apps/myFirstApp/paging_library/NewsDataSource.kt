@@ -45,9 +45,12 @@ class NewsDataSource(
                 .subscribe(
                     { response ->
                         updateState(State.DONE)
-                        callback.onResult(response.news,
-                            params.key + 1
-                        )
+                        println("params.key=${params.key}")
+                            callback.onResult(
+                                response.news,
+                                if(params.key<4)params.key +1 else null
+                            )
+
                     },
                     {
                         updateState(State.ERROR)
